@@ -138,9 +138,11 @@ Luffy dan Zoro berencana menjadikan Skypie sebagai server untuk jual beli kapal 
 ##Pembahasan
 ## Soal 8
 ## Soal 9
+
 Agar transaksi jual beli lebih aman dan pengguna website ada dua orang, proxy dipasang autentikasi user proxy dengan enkripsi MD5 dengan dua username, yaitu luffybelikapalyyy dengan password luffy_yyy dan zorobelikapalyyy dengan password zoro_yyy.  
 
 ## Pembahasan
+
 Pertama install apache2-utils dengan command `apt-get install apache2-utils -y`  
 
 Kemudian gunakan command `htpasswd -cm /etc/squid/passwd luffybelikapalc01` untuk membuat file passwd.  
@@ -149,9 +151,11 @@ Setelah menjalankan command tersebut masukkan password dan confirm password.
 Kemudian jalankan command sekali lagi tanpa parameter dan dengan username zorobelikapalc01.  
 
 Apabila password pada file `/etc/squid/passwd` berawal dengan `$apr1$` maka enkripsi dengan MD5 telah berhasil.  
+
 ![image](https://user-images.githubusercontent.com/57700613/141644855-5979010e-6c11-4e77-85fd-13b2881893a6.png)
 
 Kemudian pada file `/etc/squid/squid.conf` tambahkan
+
 ```
 http_port 5000
 visible_hostname jualbelikapal.c01.com
@@ -173,10 +177,13 @@ Setelah itu `lynx its.ac.id`
 ![image](https://user-images.githubusercontent.com/57700613/141645073-e6d2a2f5-aed4-4c12-82eb-7f22925f9f69.png)
 
 ## Soal 10
+
 Transaksi jual beli tidak dilakukan setiap hari, oleh karena itu akses internet dibatasi hanya dapat diakses setiap hari Senin-Kamis pukul 07.00-11.00 dan setiap hari Selasa-Jum’at pukul 17.00-03.00 keesokan harinya (sampai Sabtu pukul 03.00).  
 
 ## Pembahasan
+
 Untuk membatasi waktu pengaksesan pada proxy maka buat file `/etc/squid/acl.conf` yang isinya
+
 ```
 acl AVAILABLE_WORKING time MTWH 07:00-11:00
 acl AVAILABLE_WORKING time TWHF 15:00-24:00
@@ -186,9 +193,102 @@ Di sini karena mulai hari rabu dapat di akses pada jam 3 pagi maka harus menggun
 
 Kemudian pada file `/etc/squid/squid.conf` tambahkan  
 ```
+include /etc/squid/acl.conf
+http_port 5000
+visible_hostname jualbelikapal.c01.com
+
+auth_param basic program /usr/lib/squid/basic_ncsa_auth /etc/squid/passwd
+auth_param basic children 5
+auth_param basic realm Proxy
+auth_param basic credentialsttl 2 hours
+auth_param basic casesensitive on
+acl USERS proxy_auth REQUIRED
+
+
+http_access allow AVAILABLE_WORKING USERS
+http_access deny all
+```
+Jangan lupa restart squid `service squid restart`  
+
+Kemudian untuk mengecek atur proxy pada client Loguetown dengan command `export http_proxy="http://jualbelikapal.c01.com:5000"`
+Jika tanggal pada Loguetown di set menjadi senin jam 10 `date -s "8 nov 2021 10:00:00"`
+Setelah itu `lynx its.ac.id`  
+
+![image](https://user-images.githubusercontent.com/57700613/141646501-c3a33436-39f5-4942-b9a7-c5bda31a6c7f.png)
+
+Jika tanggal di set menjadi senin jam 18.00 `date -s "8 nov 2021 18:00:00"`
+
+![image](https://user-images.githubusercontent.com/57700613/141646594-51d05478-d0cb-4237-9e52-4ed8ea1fac3e.png)
+
+## Soal 11
+Agar transaksi bisa lebih fokus berjalan, maka dilakukan redirect website agar mudah mengingat website transaksi jual beli kapal. Setiap mengakses google.com, akan diredirect menuju super.franky.yyy.com dengan website yang sama pada soal shift modul 2. Web server super.franky.yyy.com berada pada node Skypie  
+
+## Pembahasan
+
+#### Untuk soal ini menggunakan konfigurasi webserver yang sama seperti modul sebelumnya, dengan DNS franky.c01.com mengarah pada Skypie. DNS jualbelikapal.c01.com hanya dibuat agar dapat diakses dengan proxy jualbelikapal.c01.com:5000
+
+Agar saat mengakses google.com dengan proxy dapat diredirect maka harus ditambahkan pada file `/etc/squid/squid.conf`  
+
+```
+acl BLACKLIST dstdomain .google.com
+deny_info http://super.franky.c01.com/ BLACKLIST
+.
+.
+.
+http_access deny AVAILABLE_WORKING BLACKLIST
+```
+`deny_info` berfungsi sebagai "error page" di mana kita akan di redirect apabila mencoba untuk mengakses situs yang diblacklist yaitu google.com.
+
+![image](https://user-images.githubusercontent.com/57700613/141647176-105b40ff-e289-4374-a55f-27e56e4f417e.png)  
+
+![image](https://user-images.githubusercontent.com/57700613/141647186-00a38421-2b8e-4676-8428-7d4b03806da2.png)
+
+
+## Soal 12 dan Soal 13
+
+Saatnya berlayar! Luffy dan Zoro akhirnya memutuskan untuk berlayar untuk mencari harta karun di super.franky.yyy.com. Tugas pencarian dibagi menjadi dua misi, Luffy bertugas untuk mendapatkan gambar (.png, .jpg), sedangkan Zoro mendapatkan sisanya. Karena Luffy orangnya sangat teliti untuk mencari harta karun, ketika ia berhasil mendapatkan gambar, ia mendapatkan gambar dan melihatnya dengan kecepatan 10 kbps (12). Sedangkan, Zoro yang sangat bersemangat untuk mencari harta karun, sehingga kecepatan kapal Zoro tidak dibatasi ketika sudah mendapatkan harta yang diinginkannya (13).
+
+## Pembahasan
+
+Untuk soal ini pertama buat file `/etc/squid/extension.txt` yang isinya
+
+```
+\.jpg$
+\.png$
+```
+File ini akan berfungsi sebagai pembatasan file yang dapat diakses luffy.  
+
+Kemudian pada file squid tambahkan
+
+```
+.
+.
+.
+acl USER2 proxy_auth zorobelikapalc01
+acl extension url_regex "/etc/squid/extension.txt"
+    
+delay_pools 2
+delay_class 1 1
+delay_access 1 allow USER2 
+delay_parameters 1 -1/-1
+delay_class 2 1
+delay_access 2 allow extension
+delay_parameters 2 10000/10000
+.
+.
+.
 
 ```
 
-## Soal 11
-## Soal 12
-## Soal 13
+Pertama untuk pembatasan bandwith membuat 2 pool, yang pertama untuk user zoro, dan yang kedua untuk user lainnya.  
+User zoro akan diperbolehkan untuk mendownload dengan speed tidak terbatas `delay_parameters 1 -1/-1`  
+Dan untuk pool ke dua, sisa pengguna (luffy dan pengguna lain) akan diperbolehkan untuk mendownload jpg dan png `delay_access 2 allow extension`  
+dengan speed 10 kbps `delay_parameters 2 10000/10000` 
+
+Mendownload dengan user **luffy**:  
+
+![image](https://user-images.githubusercontent.com/57700613/141647409-6f479935-e9cf-4fe3-aba5-5f3398f40167.png)
+
+Dengan user **zoro** download langsung selesai:  
+
+![image](https://user-images.githubusercontent.com/57700613/141647446-e8dedef1-b88e-483e-85b6-b899a730a705.png)
