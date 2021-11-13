@@ -8,6 +8,98 @@
 ## Soal 1
 Luffy bersama Zoro berencana membuat peta tersebut dengan kriteria EniesLobby sebagai DNS Server, Jipangu sebagai DHCP Server, Water7 sebagai Proxy Server (1)
 Untuk no 1 konfigurasi terlebih dahulu seperti pada https://github.com/arsitektur-jaringan-komputer/Modul-Jarkom/tree/master/Modul-GNS3#setup-ip-di-node bagian MEMBUAT TOPOLOGI agar internetnya dapat tersambung dan menginstall fitur yang kita butuhkan seperti install dhcp server, squid, dll
+## Soal 1
+Luffy bersama Zoro berencana membuat peta tersebut dengan kriteria EniesLobby sebagai DNS Server, Jipangu sebagai DHCP Server, Water7 sebagai Proxy Server (1)
+Topologi:  
+
+![image](https://user-images.githubusercontent.com/57700613/141648436-fe2bcb28-38a2-410e-adcf-4914f4be56cb.png)
+
+Kemudian tentukan konfigurasi pada setiap node: 
+
+Foosha: 
+
+```
+auto eth0
+iface eth0 inet dhcp
+
+auto eth1
+iface eth1 inet static
+	address 10.33.1.1
+	netmask 255.255.255.0
+
+auto eth2
+iface eth2 inet static
+	address 10.33.2.1
+	netmask 255.255.255.0
+
+auto eth3
+iface eth3 inet static
+	address 10.33.3.1
+	netmask 255.255.255.0
+
+
+```
+Jipangu
+```
+auto eth0
+iface eth0 inet dhcp
+	address 192.184.2.4
+	netmask 255.255.255.0
+	gateway 192.184.2.1
+```
+
+EniesLobby
+```
+auto eth0
+iface eth0 inet dhcp
+	address 192.184.2.2
+	netmask 255.255.255.0
+	gateway 192.184.2.1
+```
+Water7
+```
+auto eth0
+iface eth0 inet dhcp
+	address 192.184.2.3
+	netmask 255.255.255.0
+	gateway 192.184.2.1
+
+```
+Loguetown
+```
+auto eth0
+iface eth0 inet dhcp
+	address 192.184.1.2
+	netmask 255.255.255.0
+	gateway 192.184.1.1
+```
+Alabasta
+```
+auto eth0
+iface eth0 inet dhcp
+	address 192.184.1.3
+	netmask 255.255.255.0
+	gateway 192.184.1.1
+```
+Skypie
+```
+auto eth0
+iface eth0 inet dhcp
+	address 192.184.3.2
+	netmask 255.255.255.0
+	gateway 192.184.3.1
+
+```
+Tottoland
+```
+auto eth0
+iface eth0 inet dhcp
+	address 192.184.3.3
+	netmask 255.255.255.0
+	gateway 192.184.3.1
+
+```
+Kemudian jalankan `iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE -s 10.33.0.0/16` pada foosha
 ## Soal 2
 Foosha sebagai DHCP Relay (2).
 
