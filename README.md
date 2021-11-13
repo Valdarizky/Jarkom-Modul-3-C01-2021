@@ -22,6 +22,8 @@ SERVERS="192.184.2.4"
 INTERFACES="eth1 eth2 eth3"
 OPTIONS=””
 ```
+hasilnya akan seperti ini
+![image](https://user-images.githubusercontent.com/73706605/141647763-30a81983-aa55-4afd-a948-315ce395bb88.png) <br>
 dimana interface diisi eth1 eth2 eth3(mengarah ke 3 switch dan Server diset menuju DHCP server <b>Jipangu</b>
 
 ## Soal 3
@@ -32,12 +34,11 @@ Client yang melalui Switch1 mendapatkan range IP dari [prefix IP].1.20 - [prefix
 ## Pembahasan
 Ubah konfigruasi client terlebih dahulu
 dengan melakukan vim /etc/network/interfaces isi dengan
-
 ```bash
 auto eth0
 iface eth0 inet dhcp
 ```
-kemduian melakukan konfigurasi ke jipangu
+kemudian melakukan konfigurasi ke jipangu
 install dhcp relay terlebih dahulu dengan command dibawah:
 ```bash
 apt-get install isc-dhcp-server -y
@@ -47,6 +48,8 @@ dengan
 ```bash
 INTERFACES="eth0"
 ```
+sepeeti gambar berikut:
+![image](https://user-images.githubusercontent.com/73706605/141647852-5328a6c0-5755-4cce-b5c5-4db853211167.png)  <br>
 dimana interface diisi eth0(mengarah ke foosha)
 kemudian dilakukan konfigurasi DCH dengan mengedit /etc/dhcp/dhcpd.conf
 dengan
@@ -61,7 +64,10 @@ subnet 192.184.1.0 netmask 255.255.255.0 {
     max-lease-time 7200;
 }
 ```
+seperti gambar berikut: 
+![image](https://user-images.githubusercontent.com/73706605/141647934-0344f371-d6bc-4a32-91ee-425b04db5ff9.png) <br>
 sehingga kita dapat mengatur range alokasi IP yang kita sediakan(yang diminta soal)
+
 
 ## Soal 4
 Client yang melalui Switch3 mendapatkan range IP dari [prefix IP].3.30 - [prefix IP].3.50 (4)
@@ -84,7 +90,10 @@ subnet 192.184.3.0 netmask 255.255.255.0 {
     max-lease-time 7200;
 }
 ```
+seperti gambar berikut: 
+![image](https://user-images.githubusercontent.com/73706605/141647934-0344f371-d6bc-4a32-91ee-425b04db5ff9.png) <br>
 sehingga kita dapat mengatur range alokasi IP yang kita sediakan(yang diminta soal)
+
 ## Soal 5
 Client mendapatkan DNS dari EniesLobby dan client dapat terhubung dengan internet melalui DNS tersebut. (5)
 ## Pembahasan
@@ -107,6 +116,8 @@ Dan tambahkan
 ```bash
 allow-query{any;};
 ```
+maka hasilnya seperti ini:
+![image](https://user-images.githubusercontent.com/73706605/141648062-1c7f42fe-78e9-4044-a440-c913848738e5.png)  <br>
 kemudian restart bindnya
 ## Soal 6
 Lama waktu DHCP server meminjamkan alamat IP kepada Client yang melalui Switch1 selama 6 menit sedangkan pada client yang melalui Switch3 selama 12 menit. Dengan waktu maksimal yang dialokasikan untuk peminjaman alamat IP selama 120 menit. (6)
@@ -132,12 +143,14 @@ subnet 192.184.3.0 netmask 255.255.255.0 {
     max-lease-time 7200; //no 6
 }
 ```
+seperti gambar berikut: 
+![image](https://user-images.githubusercontent.com/73706605/141647934-0344f371-d6bc-4a32-91ee-425b04db5ff9.png)  <br>
 ## Soal 7
 Luffy dan Zoro berencana menjadikan Skypie sebagai server untuk jual beli kapal yang dimilikinya dengan alamat IP yang tetap dengan IP [prefix IP].3.69 (7).
 
 ## Pembahasan
 Dari perintah soalnya bisa diketahui bahwa kita harus buat fixed address IP untuk Skypie
-pertama dilakukan konfigurasi dhcp dengan mengedit /etc/dhcp/dhcpd.conf
+pertama dilakukan konfigurasi dhcp dengan mengedit /etc/dhcp/dhcpd.conf di <b>Jipangu</b>
 dengan menambahkan
 ```bash
 host Skypie {
@@ -145,14 +158,18 @@ host Skypie {
     fixed-address 192.184.3.69;
 }
 ```
-Yang tentunya hardware internet didapat dari mengecek IP di Skypie
+![image](https://user-images.githubusercontent.com/73706605/141648179-1c4819da-5944-41e7-90c6-842fcff8c5c4.png)  <br>
+Yang tentunya hardware internet didapat dari mengecek IP di Skypie untuk hardware addressnya
 kemudian pada skypie,edit networnya dikonfigurasi dengan
 ```bash
 auto eth0
 iface eth0 inet dhcp
 hwaddress ether 72:16:31:c1:56:f3
 ```
+![image](https://user-images.githubusercontent.com/73706605/141648207-a36363b9-b50c-4c3d-bf74-bf170be54a69.png)
+
 Kemudian restart dhcp server pada Jipangu,kemudian bisa di cek apakah ip skypie muncul atau tidak fixed addressnya sesuai perintah soal.
+
 
 ## Soal 8
 Loguetown digunakan sebagai client Proxy agar transaksi jual beli dapat terjamin keamanannya, juga untuk mencegah kebocoran data transaksi.
