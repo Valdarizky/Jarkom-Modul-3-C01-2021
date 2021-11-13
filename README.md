@@ -1,8 +1,8 @@
 # Jarkom-Modul-3-C01-2021
 
 ## Anggota Kelompok
+- Muhammad Arifiansyah (05111940000027)
 - Melanchthon Bonifacio Butarbutar (05111940000097)
-- Mu
 - Mu
 
 ## Soal 1
