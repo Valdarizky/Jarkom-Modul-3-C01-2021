@@ -3,7 +3,7 @@
 ## Anggota Kelompok dan Pembagian Tugas
 - Muhammad Arifiansyah (05111940000027) **1-5**
 - Melanchthon Bonifacio Butarbutar (05111940000097) **6-9**
-- Muhammad Valda Rizky Nur Firdaus (05111940000115) **10-13**
+- Muhammad ValdaRizky Nur Firdaus (05111940000115) **10-13**
 
 ## Soal 1
 Luffy bersama Zoro berencana membuat peta tersebut dengan kriteria EniesLobby sebagai DNS Server, Jipangu sebagai DHCP Server, Water7 sebagai Proxy Server (1)
