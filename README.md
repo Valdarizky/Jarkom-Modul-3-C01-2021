@@ -135,8 +135,29 @@ subnet 192.184.3.0 netmask 255.255.255.0 {
 ## Soal 7
 Luffy dan Zoro berencana menjadikan Skypie sebagai server untuk jual beli kapal yang dimilikinya dengan alamat IP yang tetap dengan IP [prefix IP].3.69 (7).
 
-##Pembahasan
+## Pembahasan
+Dari perintah soalnya bisa diketahui bahwa kita harus buat fixed address IP untuk Skypie
+pertama dilakukan konfigurasi dhcp dengan mengedit /etc/dhcp/dhcpd.conf
+dengan menambahkan
+```bash
+host Skypie {
+    hardware ethernet 72:16:31:c1:56:f3;
+    fixed-address 192.184.3.69;
+}
+```
+Yang tentunya hardware internet didapat dari mengecek IP di Skypie
+kemudian pada skypie,edit networnya dikonfigurasi dengan
+```bash
+auto eth0
+iface eth0 inet dhcp
+hwaddress ether 72:16:31:c1:56:f3
+```
+Kemudian restart dhcp server pada Jipangu,kemudian bisa di cek apakah ip skypie muncul atau tidak fixed addressnya sesuai perintah soal.
+
 ## Soal 8
+Loguetown digunakan sebagai client Proxy agar transaksi jual beli dapat terjamin keamanannya, juga untuk mencegah kebocoran data transaksi.
+Pada Loguetown, proxy harus bisa diakses dengan nama jualbelikapal.yyy.com dengan port yang digunakan adalah 5000 (8).
+
 ## Soal 9
 
 Agar transaksi jual beli lebih aman dan pengguna website ada dua orang, proxy dipasang autentikasi user proxy dengan enkripsi MD5 dengan dua username, yaitu luffybelikapalyyy dengan password luffy_yyy dan zorobelikapalyyy dengan password zoro_yyy.  
