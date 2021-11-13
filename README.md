@@ -7,6 +7,7 @@
 
 ## Soal 1
 Luffy bersama Zoro berencana membuat peta tersebut dengan kriteria EniesLobby sebagai DNS Server, Jipangu sebagai DHCP Server, Water7 sebagai Proxy Server (1)
+Untuk no 1 konfigurasi terlebih dahulu seperti pada https://github.com/arsitektur-jaringan-komputer/Modul-Jarkom/tree/master/Modul-GNS3#setup-ip-di-node bagian MEMBUAT TOPOLOGI agar internetnya dapat tersambung dan menginstall fitur yang kita butuhkan seperti install dhcp server, squid, dll
 ## Soal 2
 Foosha sebagai DHCP Relay (2).
 
