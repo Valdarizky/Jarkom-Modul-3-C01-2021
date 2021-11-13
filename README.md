@@ -1,9 +1,9 @@
 # Jarkom-Modul-3-C01-2021
 
-## Anggota Kelompok
-- Muhammad Arifiansyah (05111940000027)
-- Melanchthon Bonifacio Butarbutar (05111940000097)
-- Mu
+## Anggota Kelompok dan Pembagian Tugas
+- Muhammad Arifiansyah (05111940000027) 1-5
+- Melanchthon Bonifacio Butarbutar (05111940000097) 6-9
+- Muhammad Valda Rizky Nur Firdaus (05111940000115) 10-13
 
 ## Soal 1
 Luffy bersama Zoro berencana membuat peta tersebut dengan kriteria EniesLobby sebagai DNS Server, Jipangu sebagai DHCP Server, Water7 sebagai Proxy Server (1)
@@ -187,7 +187,7 @@ Kemudian pada file `/etc/squid/squid.conf`
 
 ```
 http port 5000
-visible_hostname jualbelikapal.E08.com
+visible_hostname jualbelikapal.c01.com
 
 http_access allow all
 
