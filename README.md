@@ -158,6 +158,48 @@ Kemudian restart dhcp server pada Jipangu,kemudian bisa di cek apakah ip skypie 
 Loguetown digunakan sebagai client Proxy agar transaksi jual beli dapat terjamin keamanannya, juga untuk mencegah kebocoran data transaksi.
 Pada Loguetown, proxy harus bisa diakses dengan nama jualbelikapal.yyy.com dengan port yang digunakan adalah 5000 (8).
 
+## Pembahasan
+
+Sebelumnya pertama buat DNS pada EniesLobby dengan nama jualbelikapal.c01.com.  
+Buatlah file konfigurasi `/etc/bind/jualbelikapal.c01.com` yang isinya  
+
+![image](https://user-images.githubusercontent.com/57700613/141647773-a628f36c-67eb-4d78-8a43-c450f962a872.png)
+
+Pastikan PTR mengarah pada ip Water 7  
+
+Kemudian pada file `/etc/bind/named.conf.local` tambahkan zone `jualbelikapal.c01.com` : 
+
+![image](https://user-images.githubusercontent.com/57700613/141647850-8340f4e5-ec02-41fc-a367-98dad2fc4f6c.png)
+
+Lakukan restart bind.  
+
+Dan yang terakhir pastikan nameserver Water 7 mengarah pada EniesLobby :  
+
+![image](https://user-images.githubusercontent.com/57700613/141647893-b742b7ca-68a7-4faf-a547-15bd0e57477b.png)
+
+Untuk membuat proxy pertama lakukan instalasi squid 
+```
+apt-get update
+apt-get install squid -y
+```
+
+Kemudian pada file `/etc/squid/squid.conf`
+
+```
+http port 5000
+visible_hostname jualbelikapal.E08.com
+
+http_access allow all
+
+```
+
+Kemudian lakukan restart squid  
+
+Untuk mengakses jualbelikapal.c01.com dengan proxy pertama set proxy dengan command `export http_proxy="http://jualbelikapal.c01.com:5000"`
+
+![image](https://user-images.githubusercontent.com/57700613/141648055-b07583b4-4227-4719-870e-3f3fe620a2d4.png)
+
+
 ## Soal 9
 
 Agar transaksi jual beli lebih aman dan pengguna website ada dua orang, proxy dipasang autentikasi user proxy dengan enkripsi MD5 dengan dua username, yaitu luffybelikapalyyy dengan password luffy_yyy dan zorobelikapalyyy dengan password zoro_yyy.  
