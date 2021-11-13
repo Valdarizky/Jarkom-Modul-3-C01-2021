@@ -1,17 +1,141 @@
 # Jarkom-Modul-3-C01-2021
 
 ## Anggota Kelompok
+- Muhammad Arifiansyah (05111940000027)
 - Melanchthon Bonifacio Butarbutar (05111940000097)
-- Mu
 - Mu
 
 ## Soal 1
+Luffy bersama Zoro berencana membuat peta tersebut dengan kriteria EniesLobby sebagai DNS Server, Jipangu sebagai DHCP Server, Water7 sebagai Proxy Server (1)
 ## Soal 2
+Foosha sebagai DHCP Relay (2).
+
+## Pembahasan
+install dhcp relay terlebih dahulu dengan command dibawah:
+```bash
+apt-get install isc-dhcp-relay -y
+```
+kemudian ubah isi  /etc/default/isc-dhcp-relay
+dengan
+```bash
+SERVERS="192.184.2.4"
+INTERFACES="eth1 eth2 eth3"
+OPTIONS=””
+```
+dimana interface diisi eth1 eth2 eth3(mengarah ke 3 switch dan Server diset menuju DHCP server <b>Jipangu</b>
+
 ## Soal 3
+Semua client yang ada HARUS menggunakan konfigurasi IP dari DHCP Server.
+Client yang melalui Switch1 mendapatkan range IP dari [prefix IP].1.20 - [prefix IP].1.99 dan [prefix IP].1.150 - [prefix IP].1.169 (3)
+
+
+## Pembahasan
+Ubah konfigruasi client terlebih dahulu
+dengan melakukan vim /etc/network/interfaces isi dengan
+
+```bash
+auto eth0
+iface eth0 inet dhcp
+```
+kemduian melakukan konfigurasi ke jipangu
+install dhcp relay terlebih dahulu dengan command dibawah:
+```bash
+apt-get install isc-dhcp-server -y
+```
+kemudian ubah isi /etc/default/isc-dhcp-server
+dengan
+```bash
+INTERFACES="eth0"
+```
+dimana interface diisi eth0(mengarah ke foosha)
+kemudian dilakukan konfigurasi DCH dengan mengedit /etc/dhcp/dhcpd.conf
+dengan
+```bash
+subnet 192.184.1.0 netmask 255.255.255.0 {
+    range 192.184.1.20 192.184.1.99; //nomer 3
+    range 192.184.1.150 192.184.1.169; //nomer 3
+    option routers 192.184.1.1;
+    option broadcast-address 192.184.1.255;
+    option domain-name-servers 192.184.2.2;
+    default-lease-time 360;
+    max-lease-time 7200;
+}
+```
+sehingga kita dapat mengatur range alokasi IP yang kita sediakan(yang diminta soal)
+
 ## Soal 4
+Client yang melalui Switch3 mendapatkan range IP dari [prefix IP].3.30 - [prefix IP].3.50 (4)
+## Pembahasan
+pertama ubah isi /etc/default/isc-dhcp-server
+dengan
+```bash
+INTERFACES="eth0"
+```
+dimana interface diisi eth0(mengarah ke foosha)
+kemudian dilakukan konfigurasi DCH dengan mengedit /etc/dhcp/dhcpd.conf
+dengan
+```bash
+subnet 192.184.3.0 netmask 255.255.255.0 {
+    range 192.184.3.30 192.184.3.50;
+    option routers 192.184.3.1;
+    option broadcast-address 192.184.3.255;
+    option domain-name-servers 192.184.2.2;
+    default-lease-time 720;
+    max-lease-time 7200;
+}
+```
+sehingga kita dapat mengatur range alokasi IP yang kita sediakan(yang diminta soal)
 ## Soal 5
+Client mendapatkan DNS dari EniesLobby dan client dapat terhubung dengan internet melalui DNS tersebut. (5)
+## Pembahasan
+Untuk mengerjakan soal ini pertama kita buat forwardernya dahulu
+pertama konfigurasi dhcpd.conf. di EniesLobby dengan vim
+```bash
+option domain-name-servers 192.184.2.2;
+```
+kemudian pada EniesLobby edit /etc/bind/named.conf.options lalu tambah dengan
+```bash
+forwarders {
+  192.168.122.1;
+};
+```
+Kemudian comment pada bagian
+```bash
+dnssec-validation auto;
+```
+Dan tambahkan
+```bash
+allow-query{any;};
+```
+kemudian restart bindnya
 ## Soal 6
+Lama waktu DHCP server meminjamkan alamat IP kepada Client yang melalui Switch1 selama 6 menit sedangkan pada client yang melalui Switch3 selama 12 menit. Dengan waktu maksimal yang dialokasikan untuk peminjaman alamat IP selama 120 menit. (6)
+
+## Pembahasan
+Bisa dilihat dari configurasi yang ada default lease time dan max lease time
+```bash
+subnet 192.184.1.0 netmask 255.255.255.0 {
+    range 192.184.1.20 192.184.1.99;
+    range 192.184.1.150 192.184.1.169;
+    option routers 192.184.1.1;
+    option broadcast-address 192.184.1.255;
+    option domain-name-servers 192.184.2.2;
+    default-lease-time 360; //no 6
+    max-lease-time 7200; //no 6
+}
+subnet 192.184.3.0 netmask 255.255.255.0 {
+    range 192.184.3.30 192.184.3.50;
+    option routers 192.184.3.1;
+    option broadcast-address 192.184.3.255;
+    option domain-name-servers 192.184.2.2;
+    default-lease-time 720; //no 6
+    max-lease-time 7200; //no 6
+}
+```
 ## Soal 7
+Luffy dan Zoro berencana menjadikan Skypie sebagai server untuk jual beli kapal yang dimilikinya dengan alamat IP yang tetap dengan IP [prefix IP].3.69 (7).
+
+##Pembahasan
 ## Soal 8
 ## Soal 9
 Agar transaksi jual beli lebih aman dan pengguna website ada dua orang, proxy dipasang autentikasi user proxy dengan enkripsi MD5 dengan dua username, yaitu luffybelikapalyyy dengan password luffy_yyy dan zorobelikapalyyy dengan password zoro_yyy.  
